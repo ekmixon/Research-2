@@ -1,2 +1,2 @@
 # Research
-cutting edge, experimental scripts
+Cutting edge experimental scripts
