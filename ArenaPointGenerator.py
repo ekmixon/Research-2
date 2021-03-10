@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
-import json, requests, time
+import requests, time, random
 
 username = input("What is your username?\n")
 password = input("What is your password?\n")
@@ -35,5 +35,9 @@ while True:
         },
         data=(f"seasonID={arenaseason}&action=win"),
     )
-    print(f'{r.json()["points"]} (+100)')
-    time.sleep(61)
+    try:
+        print(f'{r.json()["points"]} (+100). Your are in place number {requests.get(f"https://api.prodigygame.com/leaderboard-api/season/{arenaseason}/user/{userID}/rank?userID={userID}", headers={"authorization": token}).json()["rank"]}.')
+    except KeyError:
+        print("You are being rate limited.")
+        break
+    time.sleep(61+random.random())
