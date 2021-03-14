@@ -16,6 +16,7 @@ async def on_ready():
 async def on_message(message):
     if str(message.channel.type) != "private" and str(message.content).startswith("!generate"):
         await message.channel.send("Please DM the bot.")
+        return
     await client.process_commands(message)
 
 def _generate(username, password):
