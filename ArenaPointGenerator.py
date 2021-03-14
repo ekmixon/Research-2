@@ -1,27 +1,13 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.keys import Keys
-import requests, time, random
+import requests, time, random, json, subprocess
 
 username = input("What is your username?\n")
 password = input("What is your password?\n")
 
-chrome_options = Options()
-chrome_options.add_extension('./extension.crx')
-
-driver = webdriver.Chrome(options=chrome_options)
-
-driver.get('https://sso.prodigygame.com/game/login')
-driver.find_element_by_id("unauthenticated_game_login_form_username").send_keys(username)
-driver.find_element_by_id("unauthenticated_game_login_form_password").send_keys(password)
-driver.find_element_by_id("unauthenticated_game_login_form_password").send_keys(Keys.ENTER)
-time.sleep(30)
-
-token = driver.execute_script("return localStorage.JWT_TOKEN")
-userID = driver.execute_script("return _.player.userID")
+token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
+userID = token["userID"]
+token = f'Bearer {token["token"]}'
 arenaseason = requests.get(f"https://api.prodigygame.com/leaderboard-api/user/{userID}/init?userID={userID}", headers={'Authorization': token})
 arenaseason = arenaseason.json()["seasonID"]
-driver.close()
 
 while True:
     r = requests.post(f"https://api.prodigygame.com/leaderboard-api/season/{arenaseason}/user/{userID}/pvp?userID={userID}",
@@ -35,6 +21,10 @@ while True:
         },
         data=(f"seasonID={arenaseason}&action=win"),
     )
+    if r.text == "":
+        print("Failed to add points.")
+        time.sleep(61+random.random())
+        continue
     try:
         print(f'{r.json()["points"]} (+100). Your are in place number {requests.get(f"https://api.prodigygame.com/leaderboard-api/season/{arenaseason}/user/{userID}/rank?userID={userID}", headers={"authorization": token}).json()["rank"]}.')
     except KeyError:
