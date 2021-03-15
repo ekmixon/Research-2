@@ -6,7 +6,7 @@ password = input("What is your password?\n")
 try:
     token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
 except:
-    print("Username or Password are incorrect.")
+    print("\x1b[31mUsername or Password are incorrect.\x1b[0m")
     exit()
 userID = token["userID"]
 token = f'Bearer {token["token"]}'
