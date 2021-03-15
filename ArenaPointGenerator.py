@@ -3,7 +3,11 @@ import requests, time, random, json, subprocess
 username = input("What is your username?\n")
 password = input("What is your password?\n")
 
-token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
+try:
+    token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
+except:
+    print("Username or Password are incorrect.")
+    exit()
 userID = token["userID"]
 token = f'Bearer {token["token"]}'
 arenaseason = requests.get(f"https://api.prodigygame.com/leaderboard-api/user/{userID}/init?userID={userID}", headers={'Authorization': token})
