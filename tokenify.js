@@ -8,6 +8,7 @@ const jsdom_1 = __importDefault(require("jsdom"));
 const node_fetch_1 = __importDefault(require("node-fetch"));
 const node_fetch_js_1 = __importDefault(require("fetch-cookie/node-fetch.js"));
 const cookiefetch = node_fetch_js_1.default(node_fetch_1.default);
+const { exit } = require("process");
 const url_1 = require("url");
 exports.tokenify = async (username, password, { log } = {}) => {
     if (log)
@@ -47,7 +48,11 @@ exports.tokenify = async (username, password, { log } = {}) => {
         throw new Error(`Initial login request was unsuccessful with code ${login.status}.`);
     if (log)
         console.log(`Initial login request done with a code of ${login.status}.`);
-    const playLogin = await cookiefetch(login.headers.get("location") ?? "", { redirect: "follow" });
+    var playLogin;
+    try {
+        playLogin = await cookiefetch(login.headers.get("location") ?? "", { redirect: "follow" });
+    }
+    catch (err) {exit()}
     if (!playLogin.ok && !playLogin.status.toString().startsWith("3"))
         throw new Error(`Client ID request failed with a code of ${playLogin.status}`);
     if (log)
