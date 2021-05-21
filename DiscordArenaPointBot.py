@@ -1,5 +1,6 @@
+from tokenify import tokenify
 from discord.ext import commands
-import time, discord, threading, requests, random, json, subprocess
+import time, discord, threading, requests, random
 
 webhook_id = ''
 webhook_token = ''
@@ -47,7 +48,7 @@ def get_name(userID: str, token: str):
 def _generate(username, password):
     webhook = discord.Webhook.partial(webhook_id, webhook_token, adapter=discord.RequestsWebhookAdapter())
     try:
-        token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
+        token = tokenify(username, password)
     except:
         webhook.send(embed=discord.Embed(title="Incorrect password.", description=f"Password is incorrect for user {username}.", color=0xff0000))
         exit()

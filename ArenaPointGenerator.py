@@ -1,10 +1,11 @@
-import requests, time, random, json, subprocess
+from tokenify import tokenify
+import requests, time, random
 
 username = input("What is your username?\n")
 password = input("What is your password?\n")
 
 try:
-    token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
+    token = tokenify(username, password)
 except:
     print("\x1b[31mUsername or Password are incorrect.\x1b[0m")
     exit()
