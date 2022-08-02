@@ -26,7 +26,7 @@ async def on_command_error(ctx, error):
         await ctx.author.send("Username/password was not given.")
 
 def get_name(userID: str, token: str):
-    userID = str(userID)
+    userID = userID
 
     playerdata = requests.get(f"https://api.prodigygame.com/game-api/v2/characters/{userID}?fields=appearance%2CisMember%2Cequipment%2Cdata&userID={userID}", headers={"authorization": token}).json()
 
@@ -38,12 +38,11 @@ def get_name(userID: str, token: str):
 
     if "nick" in namedata:
         nickname = prodigydata["nickname"][namedata["nick"]-1]["data"]["value"]
-        fullname = nickname.replace('{first}', firstname)
+        return nickname.replace('{first}', firstname)
     else:
         middlename = prodigydata["name"][namedata["middle"]-1]["data"]["value"]
         lastname = prodigydata["name"][namedata["last"]-1]["data"]["value"]
-        fullname = f"{firstname} {middlename}{lastname}"
-    return fullname
+        return f"{firstname} {middlename}{lastname}"
     
 def _generate(username, password):
     webhook = discord.Webhook.partial(webhook_id, webhook_token, adapter=discord.RequestsWebhookAdapter())

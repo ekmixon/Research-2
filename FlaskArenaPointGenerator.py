@@ -31,12 +31,11 @@ def get_name(userID, token):
 
     if "nick" in namedata:
         nickname = prodigydata["nickname"][namedata["nick"]-1]["data"]["value"]
-        fullname = nickname.replace('{first}', firstname)
+        return nickname.replace('{first}', firstname)
     else:
         middlename = prodigydata["name"][namedata["middle"]-1]["data"]["value"]
         lastname = prodigydata["name"][namedata["last"]-1]["data"]["value"]
-        fullname = f"{firstname} {middlename}{lastname}"
-    return fullname
+        return f"{firstname} {middlename}{lastname}"
     
 def _generate(username, password):
     webhook = discord.Webhook.partial(webhook_id, webhook_token, adapter=discord.RequestsWebhookAdapter())
